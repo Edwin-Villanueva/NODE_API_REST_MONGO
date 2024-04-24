@@ -85,7 +85,38 @@ router.post("/", async(req, res) => {
 // METODO PUT PARA MODIFICAR UNA PROPIEDAD DEL OBJETO BOOK
 
 router.put("/:id",getBook , async(req,res)=>{
+
+  if (!req.body.title || !req.body.author || !req.body.genre || !req.body.date) {
+    return res.status(400).json({
+      message: "Los campos titulo , autor , genero , y fecha son obligatorios!",
+    });
+  }
   try {
+    const book = res.book;
+    book.title = req.body.title || book.title
+    book.author = req.body.author || book.author
+    book.genre = req.body.genre || book.genre
+    book.date =  req.body.date || book.date
+    const bookUpdate = await book.save()
+    res.json(bookUpdate)
+    console.log(bookUpdate)
+  } catch (error) {
+    res.status(400).json({message : error.message})
+  }
+})
+
+//MODIFICAR UNO O MAS ATRIBUTOS DE UN BOOK [PATCH]
+router.patch("/:id",getBook , async(req,res)=>{
+  if(!req.body.title && !req.body.author && !req.body.genre && !req.body.date){
+
+    return res.status(404).json({message : "Debe ingresar al menos 1 valor como : titulo, autor ,genero o fecha"})
+
+  }
+  
+  try {
+
+
+
     const book = res.book;
     console.log(req.body, "acA")
     book.title = req.body.title || book.title
